@@ -1,4 +1,7 @@
-DanielsSession|DockerHelper Netstat|/home/vagrant/|sudo watch -c netstat -tlnp
-DanielsSession|Images|/home/vagrant/|sudo watch docker images
-DanielsSession|Running Containers|/home/vagrant/|sudo watch docker ps
-DanielsSession|Bash Shell|/home/vagrant/|
+System|Netstat||watch  netstat -tln
+System|Images||watch docker images
+System|Running Containers||watch docker ps
+System|HTOP||htop
+Development|VIM||
+Development|RUN||
+Development|SQLITE||

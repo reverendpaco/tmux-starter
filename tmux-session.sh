@@ -39,6 +39,13 @@ restore() {
   local dimensions="$(terminal_size)"
 
   while IFS=$'|' read session_name window_name dir commandtorun; do
+    if [[ "$dir" = "" ]]; then
+      dir=$(pwd)
+    fi
+    if [[ "$commandtorun" = "" ]]; then
+      commandtorun='printf "\033[2J"; printf "\033[1m"; curl -L https://tinyurl.com/ycn5grht; printf "\033[m"; printf "\033[10A"; printf "\033[2K";printf "\033[1B";printf "\033[2K" ;printf "\033[10B"'
+    fi
+    
     if [[ -d "$dir" && $window_name != "log" && $window_name != "man" ]]; then
       if session_exists "$session_name"; then
         add_window "$session_name" "$window_name" "$dir" "$commandtorun"
@@ -50,6 +57,7 @@ restore() {
   done < ~/.tmux-session
 
   echo "restored $count sessions"
+  tmux attach
 }
 
 case "$1" in
