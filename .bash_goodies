@@ -12,3 +12,7 @@ SECOND="\$(if [[ \$(git status 2> /dev/null | wc -l) > 0 ]] ; then echo \"$GIT_I
 THIRD="\$(if [[ \$(git status -uno 2> /dev/null | grep modified | wc -l) > 0 ]] ; then echo \"$RED(◒ )$RESET\"; else echo \"    \"; fi )"
 export PS1="[\u@`cat /CLIENT`] $BLUE $FIRST $RESET $VENV_INDICATOR\n$GREEN$SECOND$RESET$THIRD$ "
 
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+export FZF_DEFAULT_OPS="--extended"
+export FZF_CTRL_T_OPTS="--preview 'head -100 {}'"
+
