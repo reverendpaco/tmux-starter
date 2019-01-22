@@ -1,0 +1,11 @@
+
+RED="\[\033[101m\]"
+BLUE="\[\033[34m\]"
+GREEN="\[\033[36m\]"
+RESET="\[\033[m\]"
+FIRST="[\$(pwd | awk '/\/home\/daniel/{print \"♕ \" \$0;next}{print \$0}')]"
+GIT_ICON="☲"
+SECOND="\$(if [[ \$(git status 2> /dev/null | wc -l) > 0 ]] ; then echo \"$GIT_ICON \"; else echo \"  \"; fi )"
+THIRD="\$(if [[ \$(git status -uno 2> /dev/null | grep modified | wc -l) > 0 ]] ; then echo \"$RED(◒ )$RESET\"; else echo \"    \"; fi )"
+export PS1="[\u@`cat /CLIENT`] $BLUE $FIRST $RESET \n$GREEN$SECOND$RESET$THIRD$ "
+
