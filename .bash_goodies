@@ -16,3 +16,5 @@ export PS1="[\u@`cat /CLIENT`] $BLUE $FIRST $RESET $VENV_INDICATOR\n$GREEN$SECON
 export FZF_DEFAULT_OPS="--extended"
 export FZF_CTRL_T_OPTS="--preview 'head -100 {}'"
 
+alias F="fzf -m --tac --border --preview 'head -100 {}'"
+alias FDB="find . -type f -iname \"*.db\" | fzf -m --tac --border --preview 'echo -e \".tables\n.schema \" | sqlite3  {}'"
