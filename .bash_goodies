@@ -4,17 +4,45 @@ BLUE="\[\033[34m\]"
 GREEN="\[\033[36m\]"
 RESET="\[\033[m\]"
 FIRST="[\$(pwd | awk '/\/home\/daniel/{print \"♕ \" \$0;next}{print \$0}')]"
-MESG="\033[5;45m$(cat /CLIENT 2> /dev/null | echo 🦄)"
+MESG="\033[45m`cat /CLIENT || 🦄`"
 VENV_INDICATOR="\0337\033[H\033[10321C\033[12D$MESG\0338"
 GIT_ICON="☲"
 SHOW_VENV="\$(if [[ \"\$VIRTUAL_ENV\" != \"\" ]]; then printf \"\$VENV_INDICATOR\" ; fi)"
 SECOND="\$(if [[ \$(git status 2> /dev/null | wc -l) > 0 ]] ; then echo \"$GIT_ICON \"; else echo \"  \"; fi )"
 THIRD="\$(if [[ \$(git status -uno 2> /dev/null | grep modified | wc -l) > 0 ]] ; then echo \"$RED(◒ )$RESET\"; else echo \"    \"; fi )"
-export PS1="[\u@$(cat /CLIENT 2> /dev/null | echo 🦄)] $BLUE $FIRST $RESET $VENV_INDICATOR\n$GREEN$SECOND$RESET$THIRD$ "
+export PS1="[\u@`cat /CLIENT`] $BLUE $FIRST $RESET $VENV_INDICATOR\n$GREEN$SECOND$RESET$THIRD$ "
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 export FZF_DEFAULT_OPS="--extended"
 export FZF_CTRL_T_OPTS="--preview 'head -100 {}'"
 
-alias F="fzf -m --tac --border --preview 'head -100 {}'"
-alias FDB="find . -type f -iname \"*.db\" | fzf -m --tac --border --preview 'echo -e \".tables\n.schema \" | sqlite3  {}'"
+
+first_lines() {
+	echo -e "================================================"
+	echo -e "TABLE: \033[43m${2}\033[m"
+	cat <<HERE | sqlite3 $1 | cut -c -80
+.mode column
+.header on
+		select * from $2 limit 1;
+HERE
+}
+
+p_db() {
+ 	cat <<HERE | sqlite3 $1
+.tables 
+HERE
+ 	NAMES=$(cat <<HERE | sqlite3 $1 
+		select name from sqlite_master where type="table";
+HERE
+)
+	for i in $NAMES
+	do
+     first_lines $1 $i
+	done
+}
+export -f p_db 
+export -f first_lines
+
+alias F="fzf --exact -m --tac --border --preview 'head -100 {}'"
+alias FDB="find . -type f -iname \"*.db\" | fzf -m --tac --border --ansi --preview 'p_db {}'"
+alias T="tar cf - \$(F) | nc -l"
